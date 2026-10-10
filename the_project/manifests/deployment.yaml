@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
         - name: the-project
-          image: fredor0k/kube-project:1.2
+          image: fredor0k/kube-project:1.5

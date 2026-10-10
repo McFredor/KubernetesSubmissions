@@ -11,3 +11,5 @@
 - [1.3.](https://github.com/McFredor/KubernetesSubmissions/tree/1.3/log_output/manifests)
 
 - [1.4.](https://github.com/McFredor/KubernetesSubmissions/tree/1.4/the_project/manifests)
+
+- [1.5.](https://github.com/McFredor/KubernetesSubmissions/tree/1.4/the_project)

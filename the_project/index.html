@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi página</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f1fb;
+      --card: #ffffff;
+      --text: #2a2540;
+      --muted: #7a7590;
+      --accent1: #7b5cff;
+      --accent2: #ff6fae;
+      --shadow: 0 10px 30px rgba(80, 60, 160, 0.12);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #14121f;
+        --card: #1f1c30;
+        --text: #ece9f7;
+        --muted: #a29dba;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Encabezado */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 5rem 1rem 6rem;
+      text-align: center;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      clip-path: ellipse(120% 100% at 50% 0%);
+    }
+    .hero::before, .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      animation: flotar 8s ease-in-out infinite;
+    }
+    .hero::before { width: 220px; height: 220px; top: -60px; left: -40px; }
+    .hero::after  { width: 160px; height: 160px; bottom: 10px; right: -30px; animation-delay: -4s; }
+    @keyframes flotar {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(20px); }
+    }
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 6vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+    .hero p { margin: 0.5rem 0 0; font-size: 1.1rem; opacity: 0.9; }
+
+    /* Contenido */
+    main {
+      max-width: 900px;
+      margin: -3rem auto 0;
+      padding: 0 1rem;
+      position: relative;
+    }
+    .tarjetas {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+    .tarjeta {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .tarjeta:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(123, 92, 255, 0.25);
+    }
+    .icono {
+      width: 48px; height: 48px;
+      display: grid; place-items: center;
+      border-radius: 12px;
+      font-size: 1.5rem;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      margin-bottom: 0.75rem;
+    }
+    .tarjeta h3 { margin: 0 0 0.25rem; }
+    .tarjeta p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+    /* Botón */
+    .accion { text-align: center; margin: 3rem 0 1rem; }
+    button {
+      padding: 0.9rem 2.2rem;
+      border: none;
+      border-radius: 999px;
+      font: 600 1rem 'Poppins', sans-serif;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      box-shadow: 0 8px 20px rgba(255, 111, 174, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    button:hover { transform: scale(1.06); box-shadow: 0 12px 28px rgba(255, 111, 174, 0.5); }
+    button:active { transform: scale(0.97); }
+
+    #msg {
+      min-height: 1.6em;
+      font-weight: 600;
+      color: var(--accent1);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    #msg.visible { opacity: 1; }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <h1>Hola, mundo ✨</h1>
+    <p>Una página simple, pero con onda.</p>
+  </header>
+
+  <main>
+    <section class="tarjetas">
+      <article class="tarjeta">
+        <div class="icono">🚀</div>
+        <h3>Rápida</h3>
+        <p>Un solo archivo, sin dependencias. Abrila y listo.</p>
+      </article>
+      <article class="tarjeta">
+        <div class="icono">🎨</div>
+        <h3>Con estilo</h3>
+        <p>Degradados, sombras suaves y animaciones sutiles.</p>
+      </article>
+      <article class="tarjeta">
+        <div class="icono">🌙</div>
+        <h3>Modo oscuro</h3>
+        <p>Se adapta solo al tema de tu dispositivo.</p>
+      </article>
+    </section>
+
+    <div class="accion">
+      <button onclick="mostrar()">Probar</button>
+      <p id="msg"></p>
+    </div>
+  </main>
+
+  <footer>&copy; 2026 Mi página · Hecho con HTML y CSS</footer>
+
+  <script>
+    const frases = ['¡Funciona! 🎉', '¡Qué lindo quedó! 💜', '¡Otra vez! 😄', '¡Seguí tocando! ✨'];
+    let i = 0;
+    function mostrar() {
+      const msg = document.getElementById('msg');
+      msg.classList.remove('visible');
+      setTimeout(() => {
+        msg.textContent = frases[i++ % frases.length];
+        msg.classList.add('visible');
+      }, 150);
+    }
+  </script>
+</body>
+</html>
