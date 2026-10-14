@@ -18,3 +18,9 @@ spec:
           env:
             - name: PORT
               value: "3000"
+
+        - name: pingpong
+          image: fredor0k/pingpong:01
+          env:
+            - name: PORT
+              value: "3001"
