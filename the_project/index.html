@@ -140,11 +140,7 @@
       </form>
       <p class="contador"><span id="contador">0</span>/140</p>
 
-      <ul class="lista">
-        <li>Aprender JavaScript</li>
-        <li>Aprender React</li>
-        <li>Construir un proyecto con Kubernetes</li>
-      </ul>
+      <ul class="lista" id="lista"></ul>
     </section>
   </main>
 
@@ -154,19 +150,56 @@
     const input = document.getElementById('todo-input');
     const btn = document.getElementById('todo-btn');
     const contador = document.getElementById('contador');
+    const lista = document.getElementById('lista');
 
-    input.addEventListener('input', () => {
+    function actualizarBoton() {
       const len = input.value.length;
       contador.textContent = len;
       btn.disabled = len === 0 || len > MAX;
-    });
+    }
+    input.addEventListener('input', actualizarBoton);
     btn.disabled = true;
 
-    // Todavía no se envía el todo al servidor.
-    form.addEventListener('submit', (e) => {
+    function agregarTodo(todo) {
+      const li = document.createElement('li');
+      li.textContent = todo.content;
+      lista.appendChild(li);
+    }
+
+    // Los todos se obtienen y guardan en el servicio todo-backend.
+    async function cargarTodos() {
+      try {
+        const res = await fetch('/todos');
+        if (!res.ok) throw new Error(res.status);
+        lista.replaceChildren();
+        (await res.json()).forEach(agregarTodo);
+      } catch (err) {
+        console.error('No se pudieron cargar los todos:', err);
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (input.value.length > MAX) return;
+      const content = input.value.trim();
+      if (content.length === 0 || content.length > MAX) return;
+
+      btn.disabled = true;
+      try {
+        const res = await fetch('/todos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content }),
+        });
+        if (!res.ok) throw new Error(await res.text());
+        agregarTodo(await res.json());
+        input.value = '';
+      } catch (err) {
+        console.error('No se pudo crear el todo:', err);
+      }
+      actualizarBoton();
     });
+
+    cargarTodos();
   </script>
 
 </body>
