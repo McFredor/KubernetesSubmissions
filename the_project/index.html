@@ -78,6 +78,45 @@
       object-fit: cover;
     }
 
+    /* Todos */
+    .todos {
+      margin: 0 0 3rem;
+      padding: 1.5rem;
+      border-radius: 16px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+    .todos h2 { margin: 0 0 1rem; font-weight: 600; }
+    .todo-form { display: flex; gap: 0.5rem; }
+    .todo-form input {
+      flex: 1;
+      min-width: 0;
+      padding: 0.7rem 1rem;
+      font: inherit;
+      color: var(--text);
+      border: 2px solid #e2ddf0;
+      border-radius: 10px;
+      outline: none;
+    }
+    .todo-form input:focus { border-color: var(--accent1); }
+    .todo-form button {
+      padding: 0.7rem 1.4rem;
+      font: inherit;
+      font-weight: 600;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      cursor: pointer;
+    }
+    .todo-form button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .contador { margin: 0.3rem 0 1rem; font-size: 0.85rem; color: var(--muted); text-align: right; }
+    .lista { list-style: none; margin: 0; padding: 0; }
+    .lista li {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid #eee9f7;
+    }
+    .lista li:last-child { border-bottom: none; }
 
   </style>
 </head>
@@ -91,7 +130,44 @@
     <figure class="foto">
       <img src="/image" alt="Imagen aleatoria de Lorem Picsum">
     </figure>
+
+    <section class="todos">
+      <h2>Todos</h2>
+      <form class="todo-form" id="todo-form">
+        <input type="text" id="todo-input" name="todo" maxlength="140"
+               placeholder="Nuevo todo (máx. 140 caracteres)" required>
+        <button type="submit" id="todo-btn">Enviar</button>
+      </form>
+      <p class="contador"><span id="contador">0</span>/140</p>
+
+      <ul class="lista">
+        <li>Aprender JavaScript</li>
+        <li>Aprender React</li>
+        <li>Construir un proyecto con Kubernetes</li>
+      </ul>
+    </section>
   </main>
+
+  <script>
+    const MAX = 140;
+    const form = document.getElementById('todo-form');
+    const input = document.getElementById('todo-input');
+    const btn = document.getElementById('todo-btn');
+    const contador = document.getElementById('contador');
+
+    input.addEventListener('input', () => {
+      const len = input.value.length;
+      contador.textContent = len;
+      btn.disabled = len === 0 || len > MAX;
+    });
+    btn.disabled = true;
+
+    // Todavía no se envía el todo al servidor.
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (input.value.length > MAX) return;
+    });
+  </script>
 
 </body>
 </html>

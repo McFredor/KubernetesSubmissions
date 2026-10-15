@@ -19,7 +19,7 @@ spec:
 
       containers:
         - name: the-project
-          image: fredor0k/kube-project:1.12.1
+          image: fredor0k/kube-project:1.13
           env:
             - name: PORT
               value: "3000"
