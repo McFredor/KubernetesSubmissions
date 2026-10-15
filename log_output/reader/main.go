@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -19,10 +21,12 @@ func main() {
 		filePath = "/usr/src/app/files/log.txt"
 	}
 
-	pingpongPath := os.Getenv("PINGPONG_FILE_PATH")
-	if pingpongPath == "" {
-		pingpongPath = "/usr/src/app/files/pingpong.txt"
+	pingpongURL := os.Getenv("PINGPONG_URL")
+	if pingpongURL == "" {
+		pingpongURL = "http://pingpong-svc:2346/pings"
 	}
+
+	client := &http.Client{Timeout: 2 * time.Second}
 
 	http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		content, err := os.ReadFile(filePath)
@@ -33,9 +37,11 @@ func main() {
 		lines := strings.Split(strings.TrimSpace(string(content)), "\n")
 		lastLine := lines[len(lines)-1]
 
-		pings := "0"
-		if c, err := os.ReadFile(pingpongPath); err == nil {
-			pings = strings.TrimSpace(string(c))
+		pings, err := fetchPings(client, pingpongURL)
+		if err != nil {
+			log.Printf("failed to fetch pings: %v", err)
+			http.Error(w, "pingpong service not available", http.StatusServiceUnavailable)
+			return
 		}
 
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
@@ -44,4 +50,22 @@ func main() {
 
 	fmt.Printf("Server started in port %s\n", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
+}
+
+func fetchPings(client *http.Client, url string) (string, error) {
+	resp, err := client.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("unexpected status %s", resp.Status)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(string(body)), nil
 }

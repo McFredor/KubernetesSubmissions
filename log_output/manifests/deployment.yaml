@@ -13,29 +13,28 @@ spec:
         app: log-output
     spec:
       volumes:
-        - name: shared-files
-          persistentVolumeClaim:
-            claimName: shared-claim
+        - name: shared-logs
+          emptyDir: {}
 
       containers:
         - name: log-writer
-          image: fredor0k/log-writer:1.11
+          image: fredor0k/log-writer:2.1
           env:
             - name: FILE_PATH
               value: /usr/src/app/files/log.txt
           volumeMounts:
-            - name: shared-files
+            - name: shared-logs
               mountPath: /usr/src/app/files
 
         - name: log-reader
-          image: fredor0k/log-reader:1.11
+          image: fredor0k/log-reader:2.1
           env:
             - name: PORT
               value: "3000"
             - name: FILE_PATH
               value: /usr/src/app/files/log.txt
-            - name: PINGPONG_FILE_PATH
-              value: /usr/src/app/files/pingpong.txt
+            - name: PINGPONG_URL
+              value: http://pingpong-svc:2346/pings
           volumeMounts:
-            - name: shared-files
+            - name: shared-logs
               mountPath: /usr/src/app/files
