@@ -12,6 +12,19 @@ spec:
       labels:
         app: the-project
     spec:
+      volumes:
+        - name: image-cache
+          persistentVolumeClaim:
+            claimName: the-project-claim
+
       containers:
         - name: the-project
-          image: fredor0k/kube-project:1.5
+          image: fredor0k/kube-project:1.12.1
+          env:
+            - name: PORT
+              value: "3000"
+            - name: IMAGE_PATH
+              value: /usr/src/app/files/image.jpg
+          volumeMounts:
+            - name: image-cache
+              mountPath: /usr/src/app/files
