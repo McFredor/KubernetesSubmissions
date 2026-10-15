@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pingpong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pingpong
+  template:
+    metadata:
+      labels:
+        app: pingpong
+    spec:
+      volumes:
+        - name: shared-files
+          persistentVolumeClaim:
+            claimName: shared-claim
+
+      containers:
+        - name: pingpong
+          image: fredor0k/pingpong:1.11
+          env:
+            - name: PORT
+              value: "3001"
+            - name: FILE_PATH
+              value: /usr/src/app/files/pingpong.txt
+          volumeMounts:
+            - name: shared-files
+              mountPath: /usr/src/app/files
